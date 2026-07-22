@@ -1,0 +1,6 @@
+- hosts: all
+
+  tasks:
+    - include_vars:
+        file: /etc/ansible/secret.yml
+        

@@ -1,0 +1,11 @@
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - command: hostname
+      delegate_to: localhost
+      register: out
+
+    - debug:
+        var: out.stdout
+        

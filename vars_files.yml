@@ -1,0 +1,9 @@
+- hosts: all
+
+  vars_files:
+    - /etc/ansible/secret.yml
+
+  tasks:
+    - debug:
+        var: some_variable
+        
