@@ -1,0 +1,10 @@
+- hosts: all
+  connection: local
+
+  tasks:
+    - command: hostname
+      register: out
+
+    - debug:
+        var: out.stdout
+        
