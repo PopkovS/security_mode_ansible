@@ -1,6 +1,10 @@
 - hosts: all
   gather_facts: false
 
+# hosts: localhost
+# hosts: 127.0.0.1
+# hosts: ::1
+
   tasks:
     - command: hostname
       delegate_to: localhost
@@ -8,4 +12,3 @@
 
     - debug:
         var: out.stdout
-        
