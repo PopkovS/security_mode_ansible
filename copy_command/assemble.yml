@@ -1,5 +1,4 @@
 - hosts: all
-
   tasks:
     - assemble:
         src: /opt/test_kc
