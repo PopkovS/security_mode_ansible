@@ -3,6 +3,6 @@
 
   tasks:
     - assemble:
-        src: /opt/test_kc
+        src: /usr/share/assistant/ast-ansible/PASHA_ANS
         dest: /opt/result.txt
         remote_src: false
