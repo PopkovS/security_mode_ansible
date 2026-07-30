@@ -1,0 +1,6 @@
+- hosts: all
+
+  tasks:
+    - unarchive:
+        src: /usr/share/assistant/ast-ansible/PASHA_ANS/archive.tar.gz
+        dest: /opt
