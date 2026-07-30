@@ -1,5 +1,8 @@
 - hosts: all
+  gather_facts: false
+
   tasks:
     - assemble:
         src: /opt/test_kc
         dest: /opt/result.txt
+        remote_src: false
