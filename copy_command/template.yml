@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+    - name: Deploy appsettings.json
+      ansible.builtin.template:
+        src: /usr/share/assistant/ast-ansible/appsettings.json
+        dest: /opt/appsettings.json
+        
