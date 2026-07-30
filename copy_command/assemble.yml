@@ -1,0 +1,6 @@
+- hosts: all
+
+  tasks:
+    - assemble:
+        src: /opt/test_kc
+        dest: /opt/result.txt
