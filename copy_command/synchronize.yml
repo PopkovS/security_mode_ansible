@@ -4,3 +4,4 @@
       ansible.posix.synchronize:
         src: /usr/share/assistant/ast-ansible/appsettings.json
         dest: /opt/appsettings.json
+        
