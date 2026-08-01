@@ -1,0 +1,6 @@
+- hosts: all
+
+  tasks:
+    - fetch:
+        src: /etc/PASH_TEST
+        dest: /usr/share/assistant/ast-ansible/PASHA_ANS
