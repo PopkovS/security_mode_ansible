@@ -1,7 +1,0 @@
-- hosts: all
-  tasks:
-    - name: Copy appsettings.json using rsync
-      ansible.posix.synchronize:
-        src: /usr/share/assistant/ast-ansible/appsettings.json
-        dest: /opt/appsettings.json
-        

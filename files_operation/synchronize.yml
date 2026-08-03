@@ -1,0 +1,16 @@
+- hosts: all
+  tasks:
+    - name: Copy appsettings.json using rsync
+      ansible.posix.synchronize:
+        # Модуль всегда запускает процесс rsync на СЕРВЕРЕ, независимо от
+        # hosts/connection/delegate_to в плейбуке — то есть он не ловится
+        # блокировкой этих параметров, которая работает для обычных модулей.
+        # По умолчанию (mode: push) src читается на сервере и уходит клиенту,
+        # плюс у модуля есть параметр rsync_opts, через который можно
+        # передать сырые опции rsync и обойти почти любые ограничения,
+        # которые вы наложите на src/dest.
+        src: /usr/share/assistant/ast-ansible/appsettings.json
+        dest: /opt/appsettings.json
+    # Из-за rsync_opts довести этот модуль до безопасного состояния сложно —
+    # проще запретить его целиком (ansible.posix.synchronize и
+    # ansible.legacy.synchronize) и предложить пользователю copy/fetch вместо него.

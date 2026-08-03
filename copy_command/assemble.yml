@@ -1,8 +1,0 @@
-- hosts: all
-  gather_facts: false
-
-  tasks:
-    - assemble:
-        src: /usr/share/assistant/ast-ansible/PASHA_ANS
-        dest: /opt/result.txt
-        remote_src: false

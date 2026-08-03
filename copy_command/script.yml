@@ -1,3 +1,0 @@
-- hosts: all
-  tasks:
-    - script: /usr/share/assistant/ast-ansible/PASHA_ANS/test.sh

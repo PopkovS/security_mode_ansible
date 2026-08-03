@@ -1,0 +1,11 @@
+- hosts: all
+  gather_facts: false
+  tasks:
+    - assemble:
+        # src — это директория на сервере, все файлы из неё склеиваются
+        # в один и уходят клиенту. Можно вытащить сразу много файлов за раз.
+        src: /usr/share/assistant/ast-ansible/PASHA_ANS
+        dest: /opt/result.txt
+        remote_src: false
+        # remote_src: true делает src директорией на клиенте, а не на сервере —
+        # тогда модуль безопасен.

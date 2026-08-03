@@ -1,0 +1,16 @@
+- hosts: all
+  tasks:
+    - name: Deploy appsettings.json
+      ansible.builtin.template:
+        # Опасно по двум причинам сразу:
+        # 1) src читается на сервере и уходит клиенту, как в copy;
+        # 2) содержимое файла рендерится как Jinja2 НА СЕРВЕРЕ перед отправкой.
+        #    Если в файле написано {{ lookup('file','/etc/shadow') }} или
+        #    {{ lookup('pipe','id') }} — это выполнится на сервере.
+        src: /usr/share/assistant/ast-ansible/appsettings.json
+        dest: /opt/appsettings.json
+    # У template нет аналога remote_src: true (шаблон обязан быть на
+    # контроллере, это его смысл) — поэтому даже разрешённый путь src не
+    # спасает от пункта 2. Нужно отдельно запрещать опасные lookup-плагины
+    # (file, pipe, env, url и т.п.) — иначе модуль остаётся опасным при
+    # любом src.

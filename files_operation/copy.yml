@@ -1,0 +1,11 @@
+- hosts: all
+  tasks:
+    - name: Copy appsettings.json
+      ansible.builtin.copy:
+        # src читается на сервере и копируется клиенту — прямая утечка файла.
+        src: /usr/share/assistant/ast-ansible/appsettings.json
+        dest: /opt/appsettings.json
+        # Безопасно, если добавить remote_src: true — тогда src читается
+        # на клиентском хосте, а не на сервере, и утечки файлов сервера нет.
+        # content: вместо src — тоже безопасно, это просто текст в плейбуке,
+        # файлы сервера не читаются.
