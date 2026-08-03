@@ -1,4 +1,3 @@
 - hosts: all
-
   tasks:
     - include_tasks: /usr/share/assistant/ast-ansible/PASHA_ANS/tasks.yml
