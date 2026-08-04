@@ -1,9 +1,0 @@
-- hosts: all
-  gather_facts: false
-
-  tasks:
-    - debug:
-        # lookup('env', ...) читает переменную окружения ПРОЦЕССА ansible
-        # на сервере — там могут быть пароли, токены, ключи API, если они
-        # передаются через env вашему ansible-сервису.
-        msg: "{{ lookup('env', 'DB_PASSWORD') }}"

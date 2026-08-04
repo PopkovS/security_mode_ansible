@@ -1,8 +1,0 @@
-- hosts: all
-  gather_facts: false
-
-  tasks:
-    - debug:
-        # lookup('pipe', ...) выполняет произвольную shell-команду на сервере
-        # и возвращает её вывод клиенту. Фактически RCE с выводом наружу.
-        msg: "{{ lookup('pipe', 'hostname') }}"
