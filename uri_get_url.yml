@@ -1,0 +1,25 @@
+# По умолчанию uri/get_url выполняются на КЛИЕНТСКОМ хосте — сами по себе
+# для сервера не опасны. Опасными их делает только связка с
+# delegate_to/connection: local/local_action (см. delegation_to_server.yml) —
+# тогда запрос уходит уже с сервера (SSRF, доступ к cloud metadata сервера).
+
+- hosts: all
+  gather_facts: false
+  tasks:
+    - ansible.builtin.uri:
+        url: http://169.254.169.254/latest/meta-data/
+      delegate_to: localhost   # без этой строки таск безобиден
+      register: resp
+
+    - debug:
+        var: resp.content
+
+# Отдельно как "опасный модуль" эти два можно не банить — достаточно, чтобы
+# правило из delegation_to_server.yml ловило delegate_to/connection: local
+# независимо от модуля. Держать этот файл имеет смысл как явный тест-кейс
+# для комбинации "uri/get_url + делегирование", чтобы убедиться, что
+# сканер видит сочетание, а не только одну директиву в отрыве от другой.
+#
+# Детект: если делаете отдельное правило —
+#   (uri|get_url)\s*: .*(delegate_to|connection:\s*local)  — в пределах
+#   одного таска (YAML-уровень, не просто "где-то в файле").

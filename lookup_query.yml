@@ -1,0 +1,48 @@
+# lookup()/query() выполняются на сервере в момент рендера Jinja2 —
+# неважно, в каком модуле и поле они стоят (debug, set_fact, when, vars,
+# loop — где угодно). query() — это lookup(), просто всегда отдаёт список.
+#
+# Есть и третий, старый синтаксис — with_<имя_плагина>: — это тоже вызов
+# lookup-плагина, просто через loop. Его часто забывают при детекте, потому
+# что он не содержит слова lookup( вообще.
+
+- hosts: all
+  gather_facts: false
+  tasks:
+
+    - debug:
+        msg: "{{ lookup('file', '/etc/hostname') }}"
+        # читает файл сервера и отдаёт клиенту
+
+    - debug:
+        msg: "{{ lookup('pipe', 'hostname') }}"
+        # выполняет shell-команду на сервере — RCE
+
+    - debug:
+        msg: "{{ lookup('env', 'DB_PASSWORD') }}"
+        # читает переменные окружения ansible-процесса на сервере
+
+    - debug:
+        msg: "{{ lookup('url', 'http://169.254.169.254/latest/meta-data/') }}"
+        # HTTP-запрос с сервера — SSRF, доступ к cloud metadata
+
+    - debug:
+        var: query('pipe', 'hostname')
+        # то же самое через query()
+
+    - debug:
+        msg: "{{ item }}"
+      with_file:
+        - /etc/hostname
+        # старый loop-синтаксис, эквивалент lookup('file', ...),
+        # но без слова lookup( в тексте
+
+# Список плагинов неполный (есть ещё csvfile, ini, password, redis,
+# dnstxt и т.д.). Правильный подход — не перечислять опасные плагины,
+# а вести allowlist безопасных (не трогающих файлы/сеть/env), и блокировать
+# lookup/query с любым остальным именем плагина.
+#
+# Детект:
+#   \blookup\s*\(   и   \bquery\s*\(   — искать по ВСЕМ строковым
+#   значениям во всём YAML-дереве, а не только в debug/set_fact.
+#   ^\s*with_\w+\s*:  — отдельно, имя после with_ и есть имя плагина.

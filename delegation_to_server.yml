@@ -1,0 +1,43 @@
+# САМОЕ ВАЖНОЕ В ЭТОМ СПИСКЕ.
+# Три разных синтаксиса делают одно и то же: заставляют таск выполниться
+# на сервере (controller), а не на клиентском хосте. Проблема не в конкретном
+# модуле — любой модуль (command, shell, copy, file, вообще любой) в связке
+# с одной из этих директив превращается в код, исполняемый на сервере
+# от имени ansible-процесса.
+#
+# Поэтому детектить нужно не "опасные модули + delegate_to", а сам факт
+# использования delegate_to/connection/local_action с localhost-подобным
+# значением — независимо от того, какой модуль в таске.
+
+- hosts: all
+  connection: local          # (1) play-level: ВСЕ таски плея идут на сервер
+  gather_facts: false
+  tasks:
+
+    - command: hostname      # (2) task-level connection тоже возможен
+      connection: local
+
+    - command: hostname       # (3) delegate_to — точечно на один таск
+      delegate_to: localhost  # так же опасны: 127.0.0.1, ::1
+
+    - local_action:           # (4) старый синтаксис delegate_to: localhost
+        module: command
+        argv: [hostname]
+
+    # - local_action: command hostname   # (4b) и inline-строкой тоже
+
+# Как безопасно: разрешить delegate_to/connection только на группы
+# из инвентаря клиента, никогда не на localhost/127.0.0.1/::1 и на
+# сам управляющий хост по имени.
+#
+# Детект (регулярки как первый фильтр, но парсить нужно YAML, не текст,
+# т.к. поля бывают вложенные):
+#   connection:\s*['"]?local\b
+#   delegate_to:\s*['"]?(localhost|127\.0\.0\.1|::1|<hostname сервера>)
+#   local_action\s*:
+#
+# Важный нюанс: delegate_to может содержать Jinja-выражение
+# ({{ some_var }}), которое в рантайме резолвится в localhost. Чистой
+# регуляркой это не поймать — либо запрещать delegate_to с переменными
+# вообще (только литеральные имена хостов из allowlist), либо резолвить
+# переменную на этапе валидации до запуска.
