@@ -1,12 +1,11 @@
 - hosts: all
   gather_facts: false
 
-# hosts: localhost
-# hosts: 127.0.0.1
-# hosts: ::1
-
   tasks:
     - command: hostname
+      # delegate_to: localhost выполняет конкретный таск на сервере, даже
+      # если play целиком нацелен на обычных клиентов. Проверять нужно
+      # каждый таск отдельно, а не только play-level hosts.
       delegate_to: localhost
       register: out
 

@@ -1,5 +1,8 @@
 - hosts: all
   connection: local
+  # connection: local заставляет ВСЕ таски этого плея выполняться на сервере,
+  # хотя hosts: all выглядит нормально. Проверять нужно и play-level, и
+  # task-level connection — его можно поставить и на отдельный таск тоже.
 
   tasks:
     - command: hostname
@@ -7,4 +10,3 @@
 
     - debug:
         var: out.stdout
-        
