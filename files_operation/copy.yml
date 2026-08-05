@@ -5,7 +5,7 @@
     - ansible.builtin.copy:
         src: /usr/share/assistant/ast-ansible/appsettings.json
         dest: /opt/appsettings.json
-
+        remote_src: true
 # Безопасно с remote_src: true — тогда src читается на клиенте, не на сервере.
 # Безопасно с content: вместо src — это просто текст в плейбуке, файлы
 # сервера не читаются вообще.
